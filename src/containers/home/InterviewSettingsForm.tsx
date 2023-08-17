@@ -2,17 +2,22 @@ import { Button, Flex, Box } from "@chakra-ui/react";
 import React from "react";
 import FormSelect from "../../components/formComponents/FormSelect";
 import { useFormik } from "formik";
+import * as Yup from "yup";
 import { PageNumbers } from "../../interface/home";
 import { IInterViewSettings } from "../../interface/forms";
+import { useData } from "./DataProvider";
 import {
+  FORM,
   interviewDurationOptions,
   interviewLanguageOptions,
   interviewModeOptions,
 } from "./constants";
+import { handleInputChange } from "@src/utils/helper";
 
 const InterviewDetailsForm: React.FC<{
   handleTab: (n: PageNumbers) => void;
 }> = ({ handleTab }) => {
+  const { setState } = useData();
   const {
     errors,
     touched,
@@ -26,21 +31,32 @@ const InterviewDetailsForm: React.FC<{
       interviewDuration: "",
       interviewLanguage: "",
     },
+    validationSchema: Yup.object().shape({
+      interviewMode: Yup.string().required("Interview Mode is required"),
+      interviewDuration: Yup.string().required(
+        "Interview Duration is required"
+      ),
+      interviewLanguage: Yup.string().required(
+        "Interview Language is required"
+      ),
+    }),
     onSubmit: (values) => {
-      console.log({ values });
       alert("Form successfully submitted");
     },
   });
 
   return (
-    <Box width="100%" as="form" onSubmit={handleSubmit as any}>
+    <Box width="100%" as="form" onSubmit={handleSubmit}>
       <Box width="100%">
         <FormSelect
           label="Interview Mode"
           placeholder="Select interview mode"
           name="interviewMode"
           options={interviewModeOptions}
-          onChange={setFieldValue}
+          onChange={(name: string, value: string) => {
+            handleInputChange(name, value, setState, FORM.INTERVIEW_SETTINGS);
+            setFieldValue(name, value);
+          }}
           onBlur={setFieldTouched}
           value={values?.interviewMode}
           error={errors?.interviewMode}
@@ -51,7 +67,10 @@ const InterviewDetailsForm: React.FC<{
           placeholder="Select interview duration"
           name="interviewDuration"
           options={interviewDurationOptions}
-          onChange={setFieldValue}
+          onChange={(name: string, value: string) => {
+            handleInputChange(name, value, setState, FORM.INTERVIEW_SETTINGS);
+            setFieldValue(name, value);
+          }}
           onBlur={setFieldTouched}
           value={values?.interviewDuration}
           error={errors?.interviewDuration}
@@ -62,7 +81,10 @@ const InterviewDetailsForm: React.FC<{
           name="interviewLanguage"
           placeholder="Select interview language"
           options={interviewLanguageOptions}
-          onChange={setFieldValue}
+          onChange={(name: string, value: string) => {
+            handleInputChange(name, value, setState, FORM.INTERVIEW_SETTINGS);
+            setFieldValue(name, value);
+          }}
           onBlur={setFieldTouched}
           error={errors.interviewLanguage}
           touched={touched.interviewLanguage}

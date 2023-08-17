@@ -6,11 +6,15 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { PageNumbers } from "../../interface/home";
 import { IRequisitionDetails } from "../../interface/forms";
-import { genderOptions, urgencyOptions } from "./constants";
+import { FORM, genderOptions, urgencyOptions } from "./constants";
+import { useData } from "./DataProvider";
+import { handleInputChange } from "@src/utils/helper";
 
 const RequisitionDetailsForm: React.FC<{
   handleTab: (n: PageNumbers) => void;
 }> = ({ handleTab }) => {
+  const { setState } = useData();
+
   const {
     handleChange,
     errors,
@@ -44,13 +48,17 @@ const RequisitionDetailsForm: React.FC<{
   });
 
   return (
-    <Box width="100%" as="form" onSubmit={handleSubmit as any}>
+    <Box width="100%" as="form" onSubmit={handleSubmit}>
       <Box width="100%">
         <FormInput
           label="Requisition Title"
           placeholder="Enter requisition title"
           name="requisitionTitle"
-          onChange={handleChange}
+          onChange={(e) => {
+            const { name, value } = e.target;
+            handleInputChange(name, value, setState, "requisitionDetails");
+            handleChange(e);
+          }}
           onBlur={handleBlur}
           value={values?.requisitionTitle}
           error={errors?.requisitionTitle}
@@ -60,7 +68,11 @@ const RequisitionDetailsForm: React.FC<{
           label="Number of openings"
           placeholder="Enter number of openings"
           name="noOfOpenings"
-          onChange={handleChange}
+          onChange={(e) => {
+            const { name, value } = e.target;
+            handleInputChange(name, value, setState, FORM.REQUISITION);
+            handleChange(e);
+          }}
           onBlur={handleBlur}
           value={values?.noOfOpenings}
           error={errors?.noOfOpenings}
@@ -71,7 +83,10 @@ const RequisitionDetailsForm: React.FC<{
           name="gender"
           placeholder="Select gender"
           options={genderOptions}
-          onChange={setFieldValue}
+          onChange={(name: string, value: string) => {
+            handleInputChange(name, value, setState, FORM.REQUISITION);
+            setFieldValue(name, value);
+          }}
           onBlur={setFieldTouched}
           error={errors.gender}
           touched={touched.gender}
@@ -82,7 +97,10 @@ const RequisitionDetailsForm: React.FC<{
           name="urgency"
           placeholder="Select urgency"
           options={urgencyOptions}
-          onChange={setFieldValue}
+          onChange={(name: string, value: string) => {
+            handleInputChange(name, value, setState, FORM.REQUISITION);
+            setFieldValue(name, value);
+          }}
           onBlur={setFieldTouched}
           error={errors.urgency}
           touched={touched.urgency}
