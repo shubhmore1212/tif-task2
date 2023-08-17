@@ -64,3 +64,9 @@ export const urgencyOptions = [
     value: "2",
   },
 ];
+
+export const FORM = {
+  INTERVIEW_SETTINGS: "interviewSettings",
+  JOB_DETAILS: "jobDetails",
+  REQUISITION: "requisitionDetails",
+};

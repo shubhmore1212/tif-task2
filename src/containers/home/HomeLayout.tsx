@@ -16,6 +16,7 @@ import JobDetailsForm from "./JobDetailsForm";
 import RequisitionForm from "./RequisitionDetailsForm";
 import DisplayCard from "./PreviewCard";
 import { PageNumbers } from "../../interface/home";
+import { useData } from "./DataProvider";
 
 const CustomTab: React.FC<TabProps> = ({ children, ...props }) => {
   return (
@@ -27,6 +28,8 @@ const CustomTab: React.FC<TabProps> = ({ children, ...props }) => {
 
 const HomeLayout = () => {
   const [page, setPage] = useState<PageNumbers>(0);
+  const { state } = useData();
+  const { requisitionDetails, jobDetails, interviewSettings } = state;
 
   const handlePage = (pageNumber: PageNumbers) => {
     setPage(pageNumber);
@@ -56,7 +59,11 @@ const HomeLayout = () => {
                 <InterviewSettingsForm handleTab={handlePage} />
               </TabPanel>
             </TabPanels>
-            <DisplayCard />
+            <DisplayCard
+              requisitionDetails={requisitionDetails}
+              jobDetails={jobDetails}
+              interviewSettings={interviewSettings}
+            />
           </Grid>
         </Tabs>
       </Container>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTheme } from "@chakra-ui/react";
 import FromWrapper from "./FormWrapper";
 import { IFormInputProps } from "@src/interface/forms";
@@ -28,6 +28,7 @@ const FormSelect: React.FC<IFormSelectProps> = ({
   options,
 }) => {
   const theme = useTheme();
+  const [state, setState] = useState<any>(null);
 
   const handleChange = (value: any) => {
     onChange && onChange(name, value?.value);
@@ -35,6 +36,10 @@ const FormSelect: React.FC<IFormSelectProps> = ({
   const handleBlur = () => {
     onBlur && onBlur(name, true);
   };
+
+  useEffect(() => {
+    setState(document.body);
+  }, []);
 
   return (
     <FromWrapper
@@ -52,6 +57,9 @@ const FormSelect: React.FC<IFormSelectProps> = ({
         onChange={handleChange}
         onBlur={handleBlur}
         options={options}
+        menuPosition="fixed"
+        menuPlacement="bottom"
+        menuPortalTarget={state}
         // styles
         styles={{
           container: (base) => ({
@@ -72,7 +80,7 @@ const FormSelect: React.FC<IFormSelectProps> = ({
               : error
               ? `1px solid ${theme.colors.errorRed}`
               : "1px solid #c0bcd7",
-            backgroundColor: theme.colors.inputBg,
+            backgroundColor: "white",
             borderRadius: "10px",
             fontSize: ".875rem",
             fontWeight: "500",
@@ -80,15 +88,17 @@ const FormSelect: React.FC<IFormSelectProps> = ({
               border: `1px solid ${theme.colors.primary}`,
             },
           }),
+          option: (base) => ({
+            ...base,
+            fontSize: ".875rem",
+            fontWeight: "500",
+            cursor: "pointer",
+          }),
           valueContainer: (base) => ({
             ...base,
             paddingLeft: "20px",
           }),
-          option: (base, { isFocused }) => ({
-            ...base,
-            fontSize: ".875rem",
-            fontWeight: "500",
-          }),
+          menuPortal: (base) => ({ ...base, zIndex: "9999 !important" }),
         }}
         {...selectProps}
       />
